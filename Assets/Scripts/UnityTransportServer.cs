@@ -66,7 +66,7 @@ public class UnityTransportServer : MonoBehaviour
                         var message = reader.ReadFixedString128();
                         Debug.Log($"Received: {message}");
 
-                        OnEventDataReceived?.Invoke("Received.." + message);
+                        OnEventDataReceived?.Invoke(message.ToString());
                     }
                     else if (cmd == NetworkEvent.Type.Disconnect)
                     {

@@ -57,8 +57,10 @@ public class MainController : MonoBehaviour
     //OVRSpatialAnchor.OperationResult Result;
 
     bool _oldState = false;
-
     string _dataCache;
+    int _creatingAnchorGroupId = 0;
+    int _loadingAnchorGroupId = 0;
+    Guid _GUIDLoadingAnchor = Guid.Empty;
 
     // Start is called before the first frame update
     void Start()
@@ -77,17 +79,7 @@ public class MainController : MonoBehaviour
         _transportServer.OnEventMainLog += OnEventServerMainLog;
 
         spatialAnchorCore.OnAnchorCreateCompleted.AddListener(OnAnchorCreateComplete);
-
-        string anchorUuid = PlayerPrefs.GetString("AnchorGUID", string.Empty);
-        if(!string.IsNullOrEmpty(anchorUuid))
-        {
-            Guid uuid;
-            if (Guid.TryParse(anchorUuid, out uuid))
-            {
-                Debug.Log("Try loading Anchor..." + uuid.ToString());
-                spatialAnchorCore.LoadAndInstantiateAnchors(anchorPrefab, new List<Guid>(){uuid});
-            }
-        }
+        spatialAnchorCore.OnAnchorsLoadCompleted.AddListener(OnAnchorLoadComplete);   
     }
 
     // Update is called once per frame
@@ -123,7 +115,8 @@ public class MainController : MonoBehaviour
     }
 
     GameObject curAnchorCache;
-    public void OnBtnLoadAnchor()
+    // Spawn Anchor Dummy to locate.
+    public void OnBtnLoadDummyAnchor()
     {
         Vector3 vPos = _objectSpawnAnchor.position + Vector3.one * UnityEngine.Random.Range(-0.1f, 0.1f);
         //spatialAnchorCore.InstantiateSpatialAnchor(objectAnchorWithManupulator, vPos, Quaternion.identity);
@@ -133,7 +126,7 @@ public class MainController : MonoBehaviour
         curAnchorCache = obj;
     }
 
-    public void OnBtnFixAnchor()
+    public void OnBtnFinalizeAndSaveAnchor(int id)
     {
         var trAnchor = curAnchorCache.transform.Find("DemoAnchorPlacementBuildingBlock");
         /*trAnchor.SetParent(curAnchorCache.transform.parent);
@@ -144,6 +137,8 @@ public class MainController : MonoBehaviour
         InitSpatialAnchorAsync(spatialAnchor);
         */
         
+        _creatingAnchorGroupId = id;
+
         var vPos = trAnchor.transform.position;
         GameObject.Destroy( curAnchorCache );
         curAnchorCache = null;
@@ -151,10 +146,33 @@ public class MainController : MonoBehaviour
         spatialAnchorCore.InstantiateSpatialAnchor(anchorPrefab, vPos, Quaternion.identity);
     }
 
+    public void OnBtnLoadAnchorGroup(int id)
+    {
+        string anchorUuid = PlayerPrefs.GetString($"AnchorGUID_{id}", string.Empty);
+        if(!string.IsNullOrEmpty(anchorUuid))
+        {
+            Guid uuid;
+            if (Guid.TryParse(anchorUuid, out uuid))
+            {
+                _GUIDLoadingAnchor = uuid;
+                _loadingAnchorGroupId = id;
+                Debug.Log("Try loading Anchor..." + uuid.ToString());
+                spatialAnchorCore.LoadAndInstantiateAnchors(anchorPrefab, new List<Guid>(){uuid});
+            }
+        }
+        else 
+            Debug.LogWarning("No Anchor Id found..." + id.ToString());
+    }
+
     void SpawnObject(string key)
     {
         Vector3 vPos = _objectSpawnAnchor.position + Vector3.one * UnityEngine.Random.Range(-0.1f, 0.1f);
         var obj = GameObject.Instantiate(GetObjectById(key), vPos, _objectSpawnAnchor.rotation);
+        obj.SetActive(true);
+    }
+    void SpawnObject(string key, Vector3 vPos, Quaternion qRot)
+    {
+        var obj = GameObject.Instantiate(GetObjectById(key), vPos, qRot);
         obj.SetActive(true);
     }
 
@@ -181,11 +199,32 @@ public class MainController : MonoBehaviour
             //PlayerPrefs.SetInt("AnchorCount", listAnchorGUID.Count);
             //for(int q = 0; q < listAnchorGUID.Count; ++q)
             //{
-            PlayerPrefs.SetString("AnchorGUID", anchor.Uuid.ToString());
+            if(_creatingAnchorGroupId > 0)
+                PlayerPrefs.SetString($"AnchorGUID_{_creatingAnchorGroupId}", anchor.Uuid.ToString());
             //}
         }
         else 
             Debug.LogError("Anchor creation has been failed.!");
+
+        _creatingAnchorGroupId = 0;
+    }
+
+    void OnAnchorLoadComplete(List<OVRSpatialAnchor> listAnchors)
+    {
+        foreach(var anchor in listAnchors)
+        {
+            if(anchor.Uuid == _GUIDLoadingAnchor)
+            {
+                // Load object.
+                string objName = _loadingAnchorGroupId==1 ? "sphere" : "capsule";
+                Vector3 vPos = anchor.transform.position + Vector3.one * UnityEngine.Random.Range(-0.1f, 0.1f);
+                SpawnObject(objName, vPos, Quaternion.identity);
+                // 
+
+
+                break;
+            }
+        }
     }
 
     IEnumerator coTriggerActionWithDelay(float delay, Action action)
@@ -204,6 +243,9 @@ public class MainController : MonoBehaviour
     void OnEventServerDateReceived(string data)
     {
         _dataCache = data;
+
+        if(data == "1")         OnBtnLoadAnchorGroup(1);
+        else if(data == "2")    OnBtnLoadAnchorGroup(2);
     }
 
     private void OnDestroy()
