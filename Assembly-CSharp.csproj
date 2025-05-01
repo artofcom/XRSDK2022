@@ -62,6 +62,7 @@
     <Compile Include="Assets\Samples\Meta MR Utility Kit\72.0.0\Destructible Mesh\Scripts\DestructibleMeshExperience.cs" />
     <Compile Include="Assets\Samples\Meta MR Utility Kit\72.0.0\Nav Mesh\Scripts\NavMeshSampleController.cs" />
     <Compile Include="Assets\Samples\Meta MR Utility Kit\72.0.0\Environment Panel Placement (Beta)\EnvironmentPanelPlacement.cs" />
+    <Compile Include="Assets\Scripts\QRCodeGen\QRCodeGen.cs" />
     <Compile Include="Assets\Samples\Meta MR Utility Kit\72.0.0\Space Map\Scripts\TerrainFlattener.cs" />
     <Compile Include="Assets\Samples\Meta MR Utility Kit\72.0.0\Bouncing Ball\assets\BouncingBallLogic.cs" />
     <Compile Include="Assets\Scripts\AnchorManager.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="Assets\Samples\Meta MR Utility Kit\72.0.0\Passthrough Relighting\FlameCharacter\FlameController.cs" />
     <Compile Include="Assets\Scripts\PoseActivateSample.cs" />
     <Compile Include="Assets\Samples\Meta MR Utility Kit\72.0.0\Bouncing Ball\assets\BouncingBallMgr.cs" />
+    <Compile Include="Assets\Scripts\QRCodeGen\UnityQRCode.cs" />
     <Compile Include="Assets\Scripts\UnityTransportServer.cs" />
     <Compile Include="Assets\Scripts\MainController.cs" />
     <Compile Include="Assets\Samples\Meta MR Utility Kit\72.0.0\Virtual Home\scripts\SimpleBillboard.cs" />
@@ -94,7 +96,9 @@
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF.shader" />
+    <None Include="Assets\Packages\QRCoder.1.3.4\lib\netstandard2.0\QRCoder.dll" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
+    <None Include="Assets\Packages\System.Drawing.Common.4.5.0-preview1-25914-04\lib\netstandard2.0\System.Drawing.Common.dll" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
@@ -353,6 +357,12 @@
     </Reference>
     <Reference Include="ReportGeneratorMerged">
       <HintPath>Library\PackageCache\com.unity.testtools.codecoverage@1.2.4\lib\ReportGenerator\ReportGeneratorMerged.dll</HintPath>
+    </Reference>
+    <Reference Include="QRCoder">
+      <HintPath>Assets\Packages\QRCoder.1.3.4\lib\netstandard2.0\QRCoder.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing.Common">
+      <HintPath>Assets\Packages\System.Drawing.Common.4.5.0-preview1-25914-04\lib\netstandard2.0\System.Drawing.Common.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
       <HintPath>Library\PackageCache\com.unity.visualscripting@1.9.0\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>

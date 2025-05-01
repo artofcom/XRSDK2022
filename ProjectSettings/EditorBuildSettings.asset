@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/[22] LoadObjFromUISelect_MRUK_Server.unity
     guid: 52ac2b4bfa164424e8d16ca312af6304
   - enabled: 1
-    path: Assets/Scenes/[26] LoadObjFromUISelect_MRUK_Server_Anchor.unity
+    path: Assets/Scenes/[30] LoadObjFromUISelect_MRUK_Server_Anchor_QRGen.unity
     guid: e30a953d1423c5c4d90c823c4c21af6e
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 3d1bee4b1d679a345be9f31a66082621, type: 2}

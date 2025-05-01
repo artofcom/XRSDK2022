@@ -57,7 +57,7 @@ public class MainController : MonoBehaviour
     //OVRSpatialAnchor.OperationResult Result;
 
     bool _oldState = false;
-    string _dataCache;
+    string _dataCache, _localLog;
     int _creatingAnchorGroupId = 0;
     int _loadingAnchorGroupId = 0;
     Guid _GUIDLoadingAnchor = Guid.Empty;
@@ -202,6 +202,9 @@ public class MainController : MonoBehaviour
             if(_creatingAnchorGroupId > 0)
                 PlayerPrefs.SetString($"AnchorGUID_{_creatingAnchorGroupId}", anchor.Uuid.ToString());
             //}
+
+            _localLog = $"AnchorSaved..{_creatingAnchorGroupId}";
+            OnEventServerMainLog("Anchor Creation has been successed.");
         }
         else 
             Debug.LogError("Anchor creation has been failed.!");
@@ -221,7 +224,7 @@ public class MainController : MonoBehaviour
                 SpawnObject(objName, vPos, Quaternion.identity);
                 // 
 
-
+                OnEventServerMainLog($"Anchor Loaded...{_loadingAnchorGroupId}.");
                 break;
             }
         }
@@ -237,15 +240,15 @@ public class MainController : MonoBehaviour
 
     void OnEventServerMainLog(string msg)
     {
-        _txtInfo.text = $"[Logger]\n{msg}\n{_dataCache}";
+        _txtInfo.text = $"[Logger]\n{msg}\n{_dataCache}\n{_localLog}";
     }
 
     void OnEventServerDateReceived(string data)
     {
         _dataCache = data;
 
-        if(data == "1")         OnBtnLoadAnchorGroup(1);
-        else if(data == "2")    OnBtnLoadAnchorGroup(2);
+        if(data.ToLower().Contains("anchor_1"))         OnBtnLoadAnchorGroup(1);
+        else if(data.ToLower().Contains("anchor_2"))    OnBtnLoadAnchorGroup(2);
     }
 
     private void OnDestroy()
